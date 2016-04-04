@@ -14,3 +14,6 @@ When the lever is pulled (you can simulate this with the click of a button), the
 
 # Demo
 See demo at http://yunap.github.io/slot-machine-study/#/espresso-bar
+
+# Tested with
+OS X Firefox 42.0,  Chrome 49.0, Safari 9.0
