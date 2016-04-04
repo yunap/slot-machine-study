@@ -3,7 +3,8 @@
 var app = angular.module('sandboxapp.home', ['ngAnimate']);
 
 app.controller('BarCtrl', function($scope, $timeout) {'use strict';
-
+  //set up initial configuration 3 reels, 3 cards per reel
+  //card height in px 100px, transition duration range 0.5-4 seconds
 	$scope.config = {
 		reelChoicesCount : 3,
 		reelCount : 3,
@@ -11,7 +12,8 @@ app.controller('BarCtrl', function($scope, $timeout) {'use strict';
 		durationMin : 0.5,
 		durationMax : 4
 	};
-
+	
+  //"REWARD" constants: drink "number" from 0 to 2 or NONE after a slot machine had been spinning or INIT at start of the game.
 	$scope.REWARDS = {
 		INIT : -2,
 		NONE : -1,
@@ -26,6 +28,8 @@ app.controller('BarCtrl', function($scope, $timeout) {'use strict';
 	var reels = [['teapot', 'coffee-maker', 'espresso-machine'], ['tea-strainer', 'coffee-filter', 'espresso-tamper'], ['loose-tea', 'coffee-grounds', 'espresso-beans']];
 
 	$scope.reward = ['tea', 'coffee', 'espresso'];
+	
+	//initialize card transforms
 	$scope.ringTransform = ['none', 'none', 'none'];
 	$scope.ringTransformDuration = [0, 0, 0];
 
@@ -35,9 +39,12 @@ app.controller('BarCtrl', function($scope, $timeout) {'use strict';
 	//array to save overall reel spin
 	var angle = [0, 0, 0];
 
-	var getRandomInt = function(min, max) {
+  //helper function to generate random integer
+	var randomInt = function(min, max) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
+	
+	//This function will initialize reels and move cards along X and Z axes
 	var setupReelChoices = function(reelNumber) {
 		var cardAngle = 360 / $scope.config.reelChoicesCount;
 		$scope.reelChoices[reelNumber] = [];
@@ -51,9 +58,10 @@ app.controller('BarCtrl', function($scope, $timeout) {'use strict';
 		}
 	};
 
+  //
 	$scope.spin = function(initial) {
+	  //to randomly move the cards on the initial spin use initial = true;
 		$scope.start = initial ? true : false;
-
 		//disable the button while spinning
 		$scope.isSpinning = true;
 		//clear reward flag
@@ -70,11 +78,11 @@ app.controller('BarCtrl', function($scope, $timeout) {'use strict';
 			return;
 		}
 
-		//when transforms had been applied unlock the lever and show the message
+		//when transforms had been applied unlock the lever and show the "reward" message
 		$timeout(function() {
 			//assign drink "number" or NONE to the "isReward" flag
 			$scope.isReward = $scope.REWARDS.NONE;
-
+      //when every random card comes from the same set, give the user the good news.
 			if (cardNumbers[0] === cardNumbers[1] && cardNumbers[0] === cardNumbers[2]) {
 				$scope.isReward = cardNumbers[0];
 			}
@@ -91,11 +99,10 @@ app.controller('BarCtrl', function($scope, $timeout) {'use strict';
 
 		for (var i = 0; i < $scope.config.reelCount; i++) {
 			//for reel 'i' get a random card
-			cardNumbers[i] = getRandomInt(0, $scope.config.reelChoicesCount - 1);
+			cardNumbers[i] = randomInt(0, $scope.config.reelChoicesCount - 1);
 
 			// prevent slot machine from showing a wining combination at start
 			if (initial && (i === $scope.config.reelCount - 1) && (cardNumbers[0] === cardNumbers[1] && cardNumbers[0] === cardNumbers[2])) {
-				//console.log("prevented a win: ", cardNumbers[i]);
 				cardNumbers[i] = (cardNumbers[i] + 1) % $scope.config.reelChoicesCount;
 			}
 
@@ -122,7 +129,7 @@ app.controller('BarCtrl', function($scope, $timeout) {'use strict';
 		return messageDelay;
 	};
 
-	//START
+	//START 
 	for (var r = 0; r < $scope.config.reelCount; r++) {
 		setupReelChoices(r);
 	}
