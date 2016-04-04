@@ -108,7 +108,7 @@
   display: block; }
 
 .coffee-filter, .espresso-tamper, .loose-tea, .tea-strainer, .teapot, .coffee-grounds, .coffee-maker, .espresso-beans, .espresso-machine {
-  background: url(/assets/img/sprites-bar.png) no-repeat; }
+  background: url(../../assets/img/sprites-bar.png) no-repeat; }
 
 .coffee-filter {
   background-position: -93px -86px;
