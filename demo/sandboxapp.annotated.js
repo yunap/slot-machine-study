@@ -20,24 +20,35 @@ app.controller('BarCtrl', [
     $scope.config = {
       reelChoicesCount: 3,
       reelCount: 3,
-      reelRadius: 100
+      reelRadius: 100,
+      durationMin: 0.5,
+      durationMax: 4
+    };
+    $scope.REWARDS = {
+      INIT: -2,
+      NONE: -1,
+      TEE: 0,
+      COFFEE: 1,
+      ESPRESSO: 2
     };
     //array that saves card content and transforms
     $scope.reelChoices = [];
-    var reelOne = [
-        'teapot',
-        'coffee-maker',
-        'espresso-machine'
-      ];
-    var reelTwo = [
-        'tea-strainer',
-        'coffee-filter',
-        'espresso-tamper'
-      ];
-    var reelThree = [
-        'loose-tea',
-        'coffee-grounds',
-        'espresso-beans'
+    var reels = [
+        [
+          'teapot',
+          'coffee-maker',
+          'espresso-machine'
+        ],
+        [
+          'tea-strainer',
+          'coffee-filter',
+          'espresso-tamper'
+        ],
+        [
+          'loose-tea',
+          'coffee-grounds',
+          'espresso-beans'
+        ]
       ];
     $scope.reward = [
       'tea',
@@ -55,18 +66,21 @@ app.controller('BarCtrl', [
       0
     ];
     $scope.start = true;
-    $scope.isReward = -2;
+    $scope.isReward = $scope.REWARDS.INIT;
     //array to save overall reel spin
     var angle = [
         0,
         0,
         0
       ];
-    var setupReelChoices = function (reelNumber, reel) {
+    var getRandomInt = function (min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+    var setupReelChoices = function (reelNumber) {
       var cardAngle = 360 / $scope.config.reelChoicesCount;
       $scope.reelChoices[reelNumber] = [];
       for (var i = 0; i < $scope.config.reelChoicesCount; i++) {
-        $scope.reelChoices[reelNumber][i] = { content: reel[i] };
+        $scope.reelChoices[reelNumber][i] = { content: reels[reelNumber][i] };
         //compute and assign the transform for this choice
         $scope.reelChoices[reelNumber][i].transform = 'rotateX(' + cardAngle * i + 'deg) translateZ(' + $scope.config.reelRadius + 'px)';
       }
@@ -76,7 +90,7 @@ app.controller('BarCtrl', [
       //disable the button while spinning
       $scope.isSpinning = true;
       //clear reward flag
-      $scope.isReward = -2;
+      $scope.isReward = $scope.REWARDS.INIT;
       //clear selected cards
       var cardNumbers = [];
       var disableDelay = spinAllReels(initial, cardNumbers);
@@ -88,8 +102,8 @@ app.controller('BarCtrl', [
       }
       //when transforms had been applied unlock the lever and show the message
       $timeout(function () {
-        //assign drink "number" or -1 to the "isReward" flag
-        $scope.isReward = -1;
+        //assign drink "number" or NONE to the "isReward" flag
+        $scope.isReward = $scope.REWARDS.NONE;
         if (cardNumbers[0] === cardNumbers[1] && cardNumbers[0] === cardNumbers[2]) {
           $scope.isReward = cardNumbers[0];
         }
@@ -101,7 +115,12 @@ app.controller('BarCtrl', [
       var messageDelay = 0;
       for (var i = 0; i < $scope.config.reelCount; i++) {
         //for reel 'i' get a random card
-        cardNumbers[i] = Math.round(Math.random() * 2);
+        cardNumbers[i] = getRandomInt(0, $scope.config.reelChoicesCount - 1);
+        // prevent slot machine from showing a wining combination at start
+        if (initial && i === $scope.config.reelCount - 1 && (cardNumbers[0] === cardNumbers[1] && cardNumbers[0] === cardNumbers[2])) {
+          //console.log("prevented a win: ", cardNumbers[i]);
+          cardNumbers[i] = (cardNumbers[i] + 1) % $scope.config.reelChoicesCount;
+        }
         //for this card to face the user it has to be rotated 'cardAngle' degrees
         var cardAngle = 360 - 120 * cardNumbers[i];
         //save total transform
@@ -110,8 +129,8 @@ app.controller('BarCtrl', [
         cardAngle += angle[i];
         console.log('CardNumber, Angle', cardNumbers[i], cardAngle, angle[i]);
         $scope.ringTransform[i] = 'rotateX(' + cardAngle + 'deg)';
-        //for visual effect very the spin speed from .5 to 3 sec
-        var duration = Math.random() * (4 - 0.5) + 0.5;
+        //for visual effect vary the spin duration
+        var duration = Math.random() * ($scope.config.durationMax - $scope.config.durationMin) + $scope.config.durationMin;
         $scope.ringTransformDuration[i] = (initial ? 0 : duration) + 's';
         //save max spin duration
         messageDelay = duration > messageDelay ? duration : messageDelay;
@@ -119,9 +138,9 @@ app.controller('BarCtrl', [
       return messageDelay;
     };
     //START
-    setupReelChoices(0, reelOne);
-    setupReelChoices(1, reelTwo);
-    setupReelChoices(2, reelThree);
+    for (var r = 0; r < $scope.config.reelCount; r++) {
+      setupReelChoices(r);
+    }
     $scope.spin(true);
   }
 ]);
@@ -147,7 +166,7 @@ app.controller('BarCtrl', [
   module.run([
     '$templateCache',
     function ($templateCache) {
-      $templateCache.put('/sandboxapp/bar/bar.html', '<div class="content content-bar animate-view"><div class="about" ui-sref="bar-about()">?</div><h1 class="title">Espresso Bar Slot Machine</h1><div class="machine"><div class="reel-wrapper" ng-repeat="reel in [0,1,2]"><div class="reel" ng-style="{\'transform\': ringTransform[reel], \'transition-duration\': ringTransformDuration[reel]}"><div ng-repeat="choice in reelChoices[reel]" class="card" ng-style="{ \'transform\' : choice.transform }"><p ng-class="{\'{{choice.content}}\' : choice.content}"></p></div></div></div></div><div><div class="animate-show" ng-show="isReward !== -2 && isReward !== -1">You won! Enjoy your {{reward[isReward]}}</div><div class="animate-show" ng-show="isReward === -1">Try again!</div><div class="animate-show" ng-show="start">Press GO to start</div></div><div class="lever"><button type="submit" ng-disabled="isSpinning" ng-click="spin()">GO</button></div></div>');
+      $templateCache.put('/sandboxapp/bar/bar.html', '<div class="content content-bar animate-view"><div class="about" ui-sref="bar-about()">?</div><h1 class="title">Espresso Bar Slot Machine</h1><div class="machine"><div class="reel-wrapper" ng-repeat="reel in [0,1,2]"><div class="reel" ng-style="{\'transform\': ringTransform[reel], \'transition-duration\': ringTransformDuration[reel]}"><div ng-repeat="choice in reelChoices[reel]" class="card" ng-style="{ \'transform\' : choice.transform }"><p ng-class="{\'{{choice.content}}\' : choice.content}"></p></div></div></div></div><div><div class="animate-show" ng-show="isReward !== REWARDS.INIT && isReward !== REWARDS.NONE">You won! Enjoy your {{reward[isReward]}}</div><div class="animate-show" ng-show="isReward === REWARDS.NONE">Try again!</div><div class="animate-show" ng-show="start">Press GO to start</div></div><div class="lever"><button type="submit" ng-disabled="isSpinning" ng-click="spin()">GO</button></div></div>');
     }
   ]);
 }());
