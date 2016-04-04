@@ -1,27 +1,37 @@
 <div class="content content-bar animate-view">
-  <div class="about" ui-sref="bar-about()">?</div>
-  <h1 class="title">Espresso Bar Slot Machine</h1>
+	<div class="about" ui-sref="bar-about()">
+		?
+	</div>
+	<h1 class="title">Espresso Bar Slot Machine</h1>
 
-  <div class="machine">
+	<div class="machine">
 
-    <div class="reel-wrapper" ng-repeat="reel in [0,1,2]">
-      <div class="reel" ng-style="{'transform': ringTransform[reel], 'transition-duration': ringTransformDuration[reel]}">
-        <div ng-repeat="choice in reelChoices[reel]" class="card" ng-style="{ 'transform' : choice.transform }">
-          <p ng-class="{'{{choice.content}}' : choice.content}"></p>
-        </div>
-      </div>
-    </div>
+		<div class="reel-wrapper" ng-repeat="reel in [0,1,2]">
+			<div class="reel" ng-style="{'transform': ringTransform[reel], 'transition-duration': ringTransformDuration[reel]}">
+				<div ng-repeat="choice in reelChoices[reel]" class="card" ng-style="{ 'transform' : choice.transform }">
+					<p ng-class="{'{{choice.content}}' : choice.content}"></p>
+				</div>
+			</div>
+		</div>
 
-  </div>
+	</div>
 
-  <div>
-  <div class="animate-show" ng-show="isReward !== -2 && isReward !== -1">You won! Enjoy your {{reward[isReward]}}</div>
-  <div class="animate-show" ng-show="isReward === -1">Try again!</div>
-  <div class="animate-show" ng-show="start">Press GO to start</div>
-  </div>
+	<div>
+		<div class="animate-show" ng-show="isReward !== REWARDS.INIT && isReward !== REWARDS.NONE">
+			You won! Enjoy your {{reward[isReward]}}
+		</div>
+		<div class="animate-show" ng-show="isReward === REWARDS.NONE">
+			Try again!
+		</div>
+		<div class="animate-show" ng-show="start">
+			Press GO to start
+		</div>
+	</div>
 
-  <div class="lever">
-    <button type="submit" ng-disabled="isSpinning" ng-click="spin()">GO</button>
-  </div>
+	<div class="lever">
+		<button type="submit" ng-disabled="isSpinning" ng-click="spin()">
+			GO
+		</button>
+	</div>
 
 </div>
