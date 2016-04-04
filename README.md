@@ -1,2 +1,2 @@
 # slot-machine-study
-playing with 3D transform
+Playing with 3D transform
