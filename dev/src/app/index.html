@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app="sandboxapp">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Sand Box</title>
+    <link rel="shortcut icon" href="http://valleybazaar.org/assets/images/favicon.ico">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/2.0/animate.min.css">
+
+    <!-- inject:vendor:css -->
+
+
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/css/app.css">
+    <!-- endinject -->
+  </head>
+  <body class="text-shadows">
+
+    <div class="main-view" ui-view></div>
+
+    <!-- inject:vendor:js -->
+    <script src="/angular/angular.js"></script>
+    <script src="/angular-route/angular-route.js"></script>
+    <script src="/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="/lodash/dist/lodash.compat.js"></script>
+    <script src="/angular-animate/angular-animate.js"></script>
+    <!-- endinject -->
+
+    <!-- inject:js -->
+	<script src="/about/about-controller.js"></script>
+	<script src="/bar/bar-controller.js"></script>
+	<script src="/sandboxapp-templates.js"></script>
+	<script src="/app.js"></script>
+	<!-- endinject -->
+
+  </body>
+</html>

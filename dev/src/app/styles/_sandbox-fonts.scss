@@ -1,0 +1,22 @@
+
+// FONTS
+
+@font-face {
+  font-family: 'Wire One';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Wire One'), local('WireOne'), url(http://themes.googleusercontent.com/static/fonts/wireone/v4/fas9dl2wmMkt5rCu-aBez3YhjbSpvc47ee6xR_80Hnw.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Source Sans Pro'), local('SourceSansPro-Regular'), url(http://themes.googleusercontent.com/static/fonts/sourcesanspro/v7/ODelI1aHBYDBqgeIAH2zlNHq-FFgoDNV3GTKpHwuvtI.woff) format('woff');
+}
+
+// FONTS
+
+$font-stack: WireOne, Helvetica, sans-serif;
+$font-stack-roman: Helvetica, sans-serif;
+

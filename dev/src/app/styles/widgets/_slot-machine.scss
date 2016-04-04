@@ -1,0 +1,112 @@
+//SLOT MACHINE
+
+.machine {
+  margin: 80px 20px;
+  display: inline-block;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+.reel-wrapper {
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  vertical-align: middle;
+}
+
+.reel {
+  margin: 0 auto;
+  height: 100px;
+  width: 100px;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  transition-timing-function: cubic-bezier(.42, -0.2, .58, 0.2);
+}
+
+.card {
+  position: absolute;
+  left: 2px;
+  width: 100px;
+  height: 100px;
+  opacity: 0.7;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: $lavender;
+  -webkit-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.card > p {
+  text-align: center;
+  margin: 15px auto;
+}
+
+.about {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  border-radius: 8px;
+  line-height: 30px;
+  width: 30px;
+  border: $cream-gray solid 1px;
+  text-align: center;
+  font-size: 26px;
+  cursor: pointer;
+  background: radial-gradient(circle at 100px 100px, $info-dark, $info-light);
+}
+
+.lever {
+  padding-top: 60px;
+  position: absolute;
+  right: 240px;
+  bottom: -30px;
+}
+
+.lever button {
+  outline: none;
+  text-align: center;
+  border-radius: 50%;
+  line-height: 80px;
+  width: 100px;
+  border: none;
+  font-size: 1.8em;
+  background: radial-gradient(circle at 100px 100px, $green-light, $green-dark);
+  -webkit-transition: all .2s ease;
+  -moz-transition: all .2s ease;
+  -o-transition: all .2s ease;
+}
+
+.lever button.disabled, .lever button[disabled], fieldset[disabled] .lever button {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.lever button:active {
+  color: $green-lever-active;
+  box-shadow: 0 2px 4px $shadow-gray-dark;
+  margin: 2px 0 -2px;
+}
+
+.animate-show {
+  padding: 10px;
+  font-size: 24px;
+}
+
+.ng-hide-remove {
+  -webkit-animation: bounceIn 2.5s;
+  animation: bounceIn 2.5s;
+}
+
+.ng-hide-add {
+  -webkit-animation: fadeOut 1.5s;
+  animation: fadeOut 1.5s;
+  display: block;
+}
+
