@@ -17,6 +17,8 @@ app.controller('BarCtrl', [
   '$timeout',
   function ($scope, $timeout) {
     'use strict';
+    //set up initial configuration 3 reels, 3 cards per reel
+    //card height in px 100px, transition duration range 0.5-4 seconds
     $scope.config = {
       reelChoicesCount: 3,
       reelCount: 3,
@@ -24,6 +26,7 @@ app.controller('BarCtrl', [
       durationMin: 0.5,
       durationMax: 4
     };
+    //"REWARD" constants: drink "number" from 0 to 2 or NONE after a slot machine had been spinning or INIT at start of the game.
     $scope.REWARDS = {
       INIT: -2,
       NONE: -1,
@@ -55,6 +58,7 @@ app.controller('BarCtrl', [
       'coffee',
       'espresso'
     ];
+    //initialize card transforms
     $scope.ringTransform = [
       'none',
       'none',
@@ -73,9 +77,11 @@ app.controller('BarCtrl', [
         0,
         0
       ];
-    var getRandomInt = function (min, max) {
+    //helper function to generate random integer
+    var randomInt = function (min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     };
+    //This function will initialize reels and move cards along X and Z axes
     var setupReelChoices = function (reelNumber) {
       var cardAngle = 360 / $scope.config.reelChoicesCount;
       $scope.reelChoices[reelNumber] = [];
@@ -85,7 +91,9 @@ app.controller('BarCtrl', [
         $scope.reelChoices[reelNumber][i].transform = 'rotateX(' + cardAngle * i + 'deg) translateZ(' + $scope.config.reelRadius + 'px)';
       }
     };
+    //
     $scope.spin = function (initial) {
+      //to randomly move the cards on the initial spin use initial = true;
       $scope.start = initial ? true : false;
       //disable the button while spinning
       $scope.isSpinning = true;
@@ -100,10 +108,11 @@ app.controller('BarCtrl', [
         $scope.isSpinning = false;
         return;
       }
-      //when transforms had been applied unlock the lever and show the message
+      //when transforms had been applied unlock the lever and show the "reward" message
       $timeout(function () {
         //assign drink "number" or NONE to the "isReward" flag
         $scope.isReward = $scope.REWARDS.NONE;
+        //when every random card comes from the same set, give the user the good news.
         if (cardNumbers[0] === cardNumbers[1] && cardNumbers[0] === cardNumbers[2]) {
           $scope.isReward = cardNumbers[0];
         }
@@ -115,20 +124,20 @@ app.controller('BarCtrl', [
       var messageDelay = 0;
       for (var i = 0; i < $scope.config.reelCount; i++) {
         //for reel 'i' get a random card
-        cardNumbers[i] = getRandomInt(0, $scope.config.reelChoicesCount - 1);
+        cardNumbers[i] = randomInt(0, $scope.config.reelChoicesCount - 1);
         // prevent slot machine from showing a wining combination at start
         if (initial && i === $scope.config.reelCount - 1 && (cardNumbers[0] === cardNumbers[1] && cardNumbers[0] === cardNumbers[2])) {
-          //console.log("prevented a win: ", cardNumbers[i]);
           cardNumbers[i] = (cardNumbers[i] + 1) % $scope.config.reelChoicesCount;
         }
         //for this card to face the user it has to be rotated 'cardAngle' degrees
-        var cardAngle = 360 - 120 * cardNumbers[i];
+        //var cardAngle = 360 - 120 * cardNumbers[i];
+        var cardAngle = 120 * cardNumbers[i];
         //save total transform
         angle[i] = initial ? 0 : angle[i] + 360 * 3;
         //add a few full spins
         cardAngle += angle[i];
         console.log('CardNumber, Angle', cardNumbers[i], cardAngle, angle[i]);
-        $scope.ringTransform[i] = 'rotateX(' + cardAngle + 'deg)';
+        $scope.ringTransform[i] = 'rotateX(-' + cardAngle + 'deg)';
         //for visual effect vary the spin duration
         var duration = Math.random() * ($scope.config.durationMax - $scope.config.durationMin) + $scope.config.durationMin;
         $scope.ringTransformDuration[i] = (initial ? 0 : duration) + 's';
@@ -181,6 +190,8 @@ angular.module('sandboxapp', [
   '$urlRouterProvider',
   function ($stateProvider, $urlRouterProvider) {
     'use strict';
+    //this is a simple ui router configuration, not that this coding chalange needs the state router
+    //however I am a fan of having states in a single page app, so setting it up here as an example
     $urlRouterProvider.otherwise('/espresso-bar');
     $stateProvider.state('bar-start', {
       url: '/espresso-bar',
